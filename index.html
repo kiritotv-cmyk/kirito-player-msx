@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KIRITO PLAYER</title>
+
 <style>
 *{box-sizing:border-box}
 body{
@@ -16,8 +17,10 @@ body{
  border-radius:16px;text-align:center;
  box-shadow:0 0 25px #0066ff44;
 }
-.logo{font-size:30px;font-weight:bold;color:#35aaff;
- text-shadow:0 0 15px #087cff}
+.logo{
+ font-size:30px;font-weight:bold;color:#35aaff;
+ text-shadow:0 0 15px #087cff
+}
 .subtitle{color:#a9c9e9;letter-spacing:3px;margin:12px 0 25px}
 input{
  width:100%;padding:15px;margin:8px 0;
@@ -26,8 +29,7 @@ input{
 }
 button{
  padding:14px;border:1px solid #126cc0;border-radius:8px;
- background:#09264a;color:white;font-size:16px;
- cursor:pointer;
+ background:#09264a;color:white;font-size:16px;cursor:pointer;
 }
 button:focus,input:focus{outline:3px solid #35aaff}
 .login button{width:100%;margin-top:14px;background:#087cff}
@@ -39,30 +41,46 @@ nav{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
 nav button{flex:1;min-width:100px}
 nav button.active{background:#087cff}
 h2{color:#35aaff}
-#categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+#categories{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+ gap:12px
+}
 .category{min-height:65px;text-align:left;background:#09172b}
 #message{color:#9acfff;margin:20px 0}
 .footer{text-align:center;color:#52799e;margin-top:30px;font-size:12px}
 </style>
 </head>
+
 <body>
 
 <section class="login" id="login">
  <div class="logo">⚔ KIRITO PLAYER</div>
  <div class="subtitle">ENTERTAINMENT SYSTEM</div>
+
  <form id="loginForm">
-  <input id="server" value="http://aurasixseven.top"
+  <input id="server" type="text"
+   value="http://aurasixseven.top"
    placeholder="DNS / Servidor" required>
-  <input id="username" placeholder="Usuário" required>
-  <input id="password" type="password" placeholder="Senha" required>
-  <button id="loginButton">ENTRAR</button>
+
+  <input id="username" type="text"
+   placeholder="Usuário" required>
+
+  <input id="password" type="password"
+   placeholder="Senha" required>
+
+  <button id="loginButton" type="submit">ENTRAR</button>
  </form>
+
  <div id="status">Informe seus dados para conectar</div>
 </section>
 
 <main id="app">
- <header><div class="logo">⚔ KIRITO PLAYER</div>
- <div>Bem-vindo ao seu entretenimento</div></header>
+
+ <header>
+  <div class="logo">⚔ KIRITO PLAYER</div>
+  <div>Bem-vindo ao seu entretenimento</div>
+ </header>
 
  <nav>
   <button class="active" data-section="live">TV AO VIVO</button>
@@ -73,6 +91,7 @@ h2{color:#35aaff}
  <h2 id="sectionTitle">Categorias de TV</h2>
  <div id="message">Carregando categorias...</div>
  <div id="categories"></div>
+
  <div class="footer">KIRITO PLAYER © 2026</div>
 </main>
 
@@ -81,7 +100,6 @@ const WORKER =
  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
 
 let credentials = null;
-let currentSection = "live";
 
 const sectionInfo = {
  live: {
@@ -100,113 +118,148 @@ const sectionInfo = {
 
 async function apiRequest(action) {
  const url = new URL(WORKER + "/player_api.php");
+
  url.searchParams.set("username",credentials.username);
  url.searchParams.set("password",credentials.password);
- if(action) url.searchParams.set("action",action);
+
+ if(action) {
+  url.searchParams.set("action",action);
+ }
 
  const response = await fetch(url.toString(),{
-  method:"GET",cache:"no-store"
+  method:"GET",
+  cache:"no-store"
  });
 
- if(!response.ok){
+ if(!response.ok) {
   throw new Error("Erro HTTP " + response.status);
  }
 
  return await response.json();
 }
 
-document.getElementById("loginForm").addEventListener("submit",
- async function(event){
-  event.preventDefault();
+document.getElementById("loginForm").addEventListener(
+ "submit", async function(event) {
 
-  const server = document.getElementById("server").value.trim();
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("status");
-  const button = document.getElementById("loginButton");
+ event.preventDefault();
 
-  try{
-   const parsed = new URL(server);
+ const server =
+  document.getElementById("server").value.trim();
 
-   if(parsed.hostname.toLowerCase() !== "aurasixseven.top"){
-    throw new Error("Servidor de teste não permitido.");
-   }
+ const username =
+  document.getElementById("username").value.trim();
 
-   credentials = {username,password};
-   button.disabled = true;
-   status.textContent = "Verificando acesso...";
+ const password =
+  document.getElementById("password").value;
 
-   const data = await apiRequest("");
+ const status =
+  document.getElementById("status");
 
-   if(!data.user_info ||
-      Number(data.user_info.auth) !== 1){
-    throw new Error("Usuário ou senha não autorizados.");
-   }
+ const button =
+  document.getElementById("loginButton");
 
-   document.getElementById("login").style.display="none";
-   document.getElementById("app").style.display="block";
+ try {
+  const parsed = new URL(server);
 
-   await loadCategories("live");
-
-  }catch(error){
-   status.textContent = error.message ||
-    "Não foi possível conectar.";
-  }finally{
-   button.disabled = false;
+  if(parsed.hostname.toLowerCase() !== "aurasixseven.top") {
+   throw new Error("Servidor de teste não permitido.");
   }
+
+  credentials = {username,password};
+
+  button.disabled = true;
+  status.textContent = "Verificando acesso...";
+
+  const data = await apiRequest("");
+
+  if(!data.user_info ||
+     Number(data.user_info.auth) !== 1) {
+   throw new Error("Usuário ou senha não autorizados.");
+  }
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+
+  await loadCategories("live");
+
+ } catch(error) {
+  status.textContent = error.message ||
+   "Não foi possível conectar.";
+ } finally {
+  button.disabled = false;
+ }
 });
 
-async function loadCategories(section){
- currentSection = section;
+async function loadCategories(section) {
+
  const info = sectionInfo[section];
+
  const box = document.getElementById("categories");
  const message = document.getElementById("message");
 
- document.getElementById("sectionTitle").textContent=info.title;
- document.querySelectorAll("nav button").forEach(button=>{
-  button.classList.toggle("active",
-   button.dataset.section===section);
+ document.getElementById("sectionTitle").textContent =
+  info.title;
+
+ document.querySelectorAll("nav button").forEach(button => {
+  button.classList.toggle(
+   "active",
+   button.dataset.section === section
+  );
  });
 
- box.innerHTML="";
- message.textContent="Carregando categorias...";
+ box.innerHTML = "";
+ message.textContent = "Carregando categorias...";
 
- try{
+ try {
   const categories = await apiRequest(info.action);
 
-  if(!Array.isArray(categories)){
+  if(!Array.isArray(categories)) {
    throw new Error("Resposta de categorias inválida.");
   }
 
-  if(categories.length===0){
-   message.textContent="Nenhuma categoria encontrada.";
+  if(categories.length === 0) {
+   message.textContent = "Nenhuma categoria encontrada.";
    return;
   }
 
-  message.textContent=categories.length+" categorias encontradas.";
+  message.textContent =
+   categories.length + " categorias encontradas.";
 
-  categories.forEach(category=>{
-   const button=document.createElement("button");
-   button.className="category";
-   button.textContent=category.category_name || "Categoria";
-   button.addEventListener("click",()=>{
-    message.textContent=
-     "Categoria selecionada: "+button.textContent+
+  categories.forEach(category => {
+
+   const button = document.createElement("button");
+
+   button.className = "category";
+
+   button.textContent =
+    category.category_name || "Categoria";
+
+   button.addEventListener("click", () => {
+
+    message.textContent =
+     "Categoria selecionada: " +
+     button.textContent +
      ". A listagem dos conteúdos será implementada na próxima etapa.";
+
    });
+
    box.appendChild(button);
   });
 
- }catch(error){
-  message.textContent="Erro ao carregar categorias: "+error.message;
+ } catch(error) {
+
+  message.textContent =
+   "Erro ao carregar categorias: " + error.message;
+
  }
 }
 
-document.querySelectorAll("nav button").forEach(button=>{
- button.addEventListener("click",()=>{
+document.querySelectorAll("nav button").forEach(button => {
+ button.addEventListener("click", () => {
   loadCategories(button.dataset.section);
  });
 });
 </script>
+
 </body>
 </html>
