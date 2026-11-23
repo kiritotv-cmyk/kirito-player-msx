@@ -6,44 +6,41 @@
 <title>KIRITO PLAYER</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at center, #102b50, #050914 75%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #102b50, #050914 75%);
   color: white;
   font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
 }
 
 .login {
   width: 100%;
   max-width: 430px;
   padding: 35px;
-  background: rgba(5, 12, 27, 0.95);
+  text-align: center;
+  background: #071225;
   border: 1px solid #087cff;
   border-radius: 18px;
   box-shadow: 0 0 30px #0066ff55;
-  text-align: center;
 }
 
 .logo {
-  font-size: 34px;
+  font-size: 32px;
   font-weight: bold;
   color: #35aaff;
   text-shadow: 0 0 15px #087cff;
-  margin-bottom: 8px;
 }
 
 .subtitle {
+  margin: 10px 0 25px;
   color: #a9c9e9;
-  margin-bottom: 28px;
   letter-spacing: 3px;
 }
 
@@ -56,12 +53,6 @@ input {
   background: #09172b;
   color: white;
   font-size: 17px;
-  outline: none;
-}
-
-input:focus {
-  border-color: #20a5ff;
-  box-shadow: 0 0 10px #087cff;
 }
 
 button {
@@ -77,75 +68,103 @@ button {
   cursor: pointer;
 }
 
-button:focus {
-  outline: 3px solid white;
-  box-shadow: 0 0 20px #00aaff;
+button:focus, input:focus {
+  outline: 3px solid #35aaff;
 }
 
 #status {
+  margin-top: 18px;
   color: #80caff;
   font-size: 14px;
-  margin-top: 18px;
+  overflow-wrap: anywhere;
 }
 
 .footer {
+  margin-top: 25px;
   color: #52799e;
   font-size: 12px;
-  margin-top: 25px;
 }
 </style>
 </head>
 
 <body>
 <div class="login">
-
   <div class="logo">⚔ KIRITO PLAYER</div>
   <div class="subtitle">ENTERTAINMENT SYSTEM</div>
 
   <form id="loginForm">
-    <input
-      id="server"
-      type="text"
-      placeholder="DNS / Servidor"
-      autocomplete="url"
-      required
-    >
+    <input id="server" type="text"
+      value="http://aurasixseven.top"
+      placeholder="DNS / Servidor" required>
 
-    <input
-      id="username"
-      type="text"
-      placeholder="Usuário"
-      autocomplete="username"
-      required
-    >
+    <input id="username" type="text"
+      placeholder="Usuário" required>
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Senha"
-      autocomplete="current-password"
-      required
-    >
+    <input id="password" type="password"
+      placeholder="Senha" required>
 
-    <button type="submit">ENTRAR</button>
+    <button id="loginButton" type="submit">ENTRAR</button>
   </form>
 
-  <div id="status">Conecte-se para continuar</div>
-
-  <div class="footer">
-    KIRITO PLAYER © 2026
-  </div>
-
+  <div id="status">Informe seus dados para conectar</div>
+  <div class="footer">KIRITO PLAYER © 2026</div>
 </div>
 
 <script>
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+const WORKER =
+  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
+
+const form = document.getElementById("loginForm");
+const statusBox = document.getElementById("status");
+const loginButton = document.getElementById("loginButton");
+
+form.addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  document.getElementById("status").textContent =
-    "Tela pronta. A conexão com o servidor será configurada na próxima etapa.";
+  const server = document.getElementById("server").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  try {
+    const parsed = new URL(server);
+
+    if (parsed.hostname.toLowerCase() !== "aurasixseven.top") {
+      throw new Error("Neste teste, use o servidor aurasixseven.top.");
+    }
+
+    loginButton.disabled = true;
+    statusBox.textContent = "Conectando ao servidor...";
+
+    const endpoint = new URL(WORKER + "/player_api.php");
+    endpoint.searchParams.set("username", username);
+    endpoint.searchParams.set("password", password);
+
+    const response = await fetch(endpoint.toString(), {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("Servidor respondeu HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (!data.user_info ||
+        Number(data.user_info.auth) !== 1) {
+      throw new Error("Usuário ou senha não autorizados.");
+    }
+
+    statusBox.textContent =
+      "Login validado! Próxima etapa: carregar categorias.";
+
+  } catch (error) {
+    statusBox.textContent = error.message ||
+      "Não foi possível conectar ao servidor.";
+  } finally {
+    loginButton.disabled = false;
+  }
 });
 </script>
-
 </body>
 </html>
