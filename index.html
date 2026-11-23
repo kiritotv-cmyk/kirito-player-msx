@@ -106,7 +106,6 @@ video{
    placeholder="Senha" required>
   <button id="loginButton" type="submit">ENTRAR</button>
  </form>
-
  <div id="status">Informe seus dados para conectar</div>
 </section>
 
@@ -138,9 +137,7 @@ video{
      webkit-playsinline preload="none"></video>
    </div>
 
-   <div id="nowPlaying">
-    Selecione um canal para assistir
-   </div>
+   <div id="nowPlaying">Selecione um canal para assistir</div>
 
    <div class="player-buttons">
     <button id="mpegButton">TENTAR MPEGTS</button>
@@ -157,7 +154,6 @@ video{
  <div class="footer">KIRITO PLAYER © 2026</div>
 </main>
 
-<!-- Bibliotecas de reprodução -->
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.8.0/dist/mpegts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 
@@ -166,7 +162,6 @@ const WORKER =
  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
 
 let credentials = null;
-let serverAddress = "";
 let currentCategory = null;
 let currentSection = "live";
 let currentChannel = null;
@@ -192,10 +187,13 @@ async function apiRequest(action,extra={}) {
  });
 
  const response = await fetch(url.toString(),{
-  method:"GET",cache:"no-store"
+  method:"GET",
+  cache:"no-store"
  });
 
- if(!response.ok) throw new Error("Erro HTTP "+response.status);
+ if(!response.ok) {
+  throw new Error("Erro HTTP "+response.status);
+ }
 
  return await response.json();
 }
@@ -217,7 +215,6 @@ document.getElementById("loginForm").addEventListener(
     throw new Error("Servidor de teste não permitido.");
    }
 
-   serverAddress = parsed.origin;
    credentials = {username,password};
 
    button.disabled = true;
@@ -251,7 +248,9 @@ async function loadCategories(section) {
  document.getElementById("sectionTitle").textContent = info.title;
 
  document.querySelectorAll("nav button").forEach(button=>{
-  button.classList.toggle("active",button.dataset.section===section);
+  button.classList.toggle(
+   "active",button.dataset.section===section
+  );
  });
 
  box.innerHTML = "";
@@ -369,12 +368,13 @@ async function loadChannels() {
  }
 }
 
+/* ENDEREÇO DA TRANSMISSÃO PELO WORKER */
 function buildStreamUrl(streamId,format) {
  const user = encodeURIComponent(credentials.username);
  const pass = encodeURIComponent(credentials.password);
 
- return serverAddress+"/live/"+user+"/"+pass+"/"+
-  encodeURIComponent(streamId)+"."+format;
+ return WORKER + "/live/" + user + "/" + pass + "/" +
+  encodeURIComponent(streamId) + "." + format;
 }
 
 function stopPlayback() {
@@ -387,6 +387,7 @@ function stopPlayback() {
    mpegPlayer.detachMediaElement();
    mpegPlayer.destroy();
   } catch(e) {}
+
   mpegPlayer = null;
  }
 
@@ -442,7 +443,7 @@ function playMpegts(channel) {
   mpegPlayer.on(mpegts.Events.ERROR,(type,detail,info)=>{
    status.textContent =
     "Erro MPEGTS: "+type+" / "+detail+
-    ". Verifique HTTPS, CORS e acesso ao stream.";
+    ". Verifique o acesso à transmissão.";
   });
 
   mpegPlayer.load();
@@ -485,7 +486,7 @@ function playHls(channel) {
    if(data.fatal) {
     status.textContent =
      "Erro HLS: "+data.details+
-     ". Verifique HTTPS, CORS e acesso ao stream.";
+     ". Verifique o acesso ao manifesto e aos segmentos.";
    }
   });
 
@@ -522,7 +523,7 @@ document.querySelectorAll("nav button").forEach(button=>{
   loadCategories(button.dataset.section);
  });
 });
-
 </script>
+
 </body>
 </html>
