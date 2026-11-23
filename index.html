@@ -7,207 +7,83 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
- margin:0;
- background:#050914;
- color:white;
- font-family:Arial,sans-serif;
- padding:16px;
+ margin:0;background:#050914;color:white;
+ font-family:Arial,sans-serif;padding:16px;
 }
-
 .login{
- max-width:430px;
- margin:8vh auto;
- padding:30px;
- background:#09172b;
- border:1px solid #087cff;
- border-radius:16px;
- text-align:center;
+ max-width:430px;margin:8vh auto;padding:30px;
+ background:#09172b;border:1px solid #087cff;
+ border-radius:16px;text-align:center;
  box-shadow:0 0 25px #0066ff44;
 }
-
 .logo{
- font-size:30px;
- font-weight:bold;
- color:#35aaff;
+ font-size:30px;font-weight:bold;color:#35aaff;
  text-shadow:0 0 15px #087cff;
 }
-
-.subtitle{
- color:#a9c9e9;
- letter-spacing:3px;
- margin:12px 0 25px;
-}
-
+.subtitle{color:#a9c9e9;letter-spacing:3px;margin:12px 0 25px}
 input{
- width:100%;
- padding:15px;
- margin:8px 0;
- background:#061020;
- border:1px solid #174d83;
- border-radius:8px;
- color:white;
- font-size:16px;
+ width:100%;padding:15px;margin:8px 0;
+ background:#061020;border:1px solid #174d83;
+ border-radius:8px;color:white;font-size:16px;
 }
-
 button{
- padding:13px;
- border:1px solid #126cc0;
- border-radius:8px;
- background:#09264a;
- color:white;
- font-size:15px;
- cursor:pointer;
+ padding:13px;border:1px solid #126cc0;
+ border-radius:8px;background:#09264a;
+ color:white;font-size:15px;cursor:pointer;
 }
-
-button:focus,input:focus{
- outline:3px solid #35aaff;
-}
-
-.login button{
- width:100%;
- margin-top:14px;
- background:#087cff;
-}
-
-#status{
- margin-top:18px;
- color:#80caff;
- overflow-wrap:anywhere;
-}
-
-#app{
- display:none;
- max-width:1200px;
- margin:auto;
-}
-
-header{
- padding:15px 0;
- border-bottom:1px solid #174d83;
-}
-
+button:focus,input:focus{outline:3px solid #35aaff}
+.login button{width:100%;margin-top:14px;background:#087cff}
+#status{margin-top:18px;color:#80caff;overflow-wrap:anywhere}
+#app{display:none;max-width:1200px;margin:auto}
+header{padding:15px 0;border-bottom:1px solid #174d83}
 header .logo{font-size:27px}
-
-nav{
- display:flex;
- gap:10px;
- flex-wrap:wrap;
- margin:18px 0;
-}
-
-nav button{
- flex:1;
- min-width:100px;
-}
-
-nav button.active{
- background:#087cff;
-}
-
+nav{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+nav button{flex:1;min-width:100px}
+nav button.active{background:#087cff}
 h2{color:#35aaff;font-size:20px}
-
-.layout{
- display:grid;
- grid-template-columns:260px 1fr;
- gap:16px;
-}
-
+.layout{display:grid;grid-template-columns:260px 1fr;gap:16px}
 .panel{
- background:#09172b;
- border:1px solid #174d83;
- border-radius:12px;
- padding:14px;
- min-width:0;
+ background:#09172b;border:1px solid #174d83;
+ border-radius:12px;padding:14px;min-width:0;
 }
-
 #categories{
- display:flex;
- flex-direction:column;
- gap:8px;
- max-height:500px;
- overflow:auto;
+ display:flex;flex-direction:column;gap:8px;
+ max-height:500px;overflow:auto;
 }
-
-.category{
- width:100%;
- text-align:left;
- background:#061020;
-}
-
-.category.active{
- background:#087cff;
-}
-
+.category{width:100%;text-align:left;background:#061020}
+.category.active{background:#087cff}
 #channels{
  display:grid;
  grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
- gap:10px;
- margin-top:15px;
+ gap:10px;margin-top:15px;
 }
-
 .channel{
- background:#061020;
- min-height:125px;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:8px;
- text-align:center;
- overflow-wrap:anywhere;
+ background:#061020;min-height:125px;
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:center;
+ gap:8px;text-align:center;overflow-wrap:anywhere;
 }
-
-.channel.active{
- border-color:#35aaff;
- background:#10345a;
-}
-
-.channel img{
- width:55px;
- height:55px;
- object-fit:contain;
-}
-
+.channel.active{border-color:#35aaff;background:#10345a}
+.channel img{width:55px;height:55px;object-fit:contain}
 .player{
- background:#000;
- border:1px solid #087cff;
- border-radius:12px;
- overflow:hidden;
+ background:#000;border:1px solid #087cff;
+ border-radius:12px;overflow:hidden;
 }
-
 video{
- width:100%;
- display:block;
- background:#000;
+ width:100%;display:block;background:#000;
  aspect-ratio:16/9;
 }
-
-#nowPlaying{
- color:#80caff;
- margin:12px 0;
- overflow-wrap:anywhere;
+#nowPlaying,#message{
+ color:#9acfff;margin:12px 0;overflow-wrap:anywhere;
 }
-
-#message{
- color:#9acfff;
- margin:12px 0;
-}
-
-.footer{
- text-align:center;
- color:#52799e;
- margin-top:30px;
- font-size:12px;
-}
-
+.player-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.player-buttons button{flex:1}
+.footer{text-align:center;color:#52799e;margin-top:30px;font-size:12px}
 @media(max-width:700px){
  .layout{grid-template-columns:1fr}
-
  #categories{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
+  display:grid;grid-template-columns:repeat(2,1fr);
   max-height:220px;
  }
 }
@@ -217,115 +93,75 @@ video{
 <body>
 
 <section class="login" id="login">
-
  <div class="logo">⚔ KIRITO PLAYER</div>
  <div class="subtitle">ENTERTAINMENT SYSTEM</div>
 
  <form id="loginForm">
-
-  <input id="server"
-   type="text"
+  <input id="server" type="text"
    value="http://aurasixseven.top"
-   placeholder="DNS / Servidor"
-   required>
-
-  <input id="username"
-   type="text"
-   placeholder="Usuário"
-   required>
-
-  <input id="password"
-   type="password"
-   placeholder="Senha"
-   required>
-
-  <button id="loginButton" type="submit">
-   ENTRAR
-  </button>
-
+   placeholder="DNS / Servidor" required>
+  <input id="username" type="text"
+   placeholder="Usuário" required>
+  <input id="password" type="password"
+   placeholder="Senha" required>
+  <button id="loginButton" type="submit">ENTRAR</button>
  </form>
 
- <div id="status">
-  Informe seus dados para conectar
- </div>
-
+ <div id="status">Informe seus dados para conectar</div>
 </section>
 
 <main id="app">
-
  <header>
   <div class="logo">⚔ KIRITO PLAYER</div>
   <div>Seu entretenimento em um só lugar</div>
  </header>
 
  <nav>
-  <button class="active" data-section="live">
-   TV AO VIVO
-  </button>
-
-  <button data-section="vod">
-   FILMES
-  </button>
-
-  <button data-section="series">
-   SÉRIES
-  </button>
+  <button class="active" data-section="live">TV AO VIVO</button>
+  <button data-section="vod">FILMES</button>
+  <button data-section="series">SÉRIES</button>
  </nav>
 
  <h2 id="sectionTitle">TV AO VIVO</h2>
 
  <div class="layout">
-
   <section class="panel">
    <h3>CATEGORIAS</h3>
    <div id="categories"></div>
   </section>
 
   <section class="panel">
-
    <h3>REPRODUTOR</h3>
 
    <div class="player">
-    <video
-     id="video"
-     controls
-     playsinline
-     webkit-playsinline
-     preload="none">
-    </video>
+    <video id="video" controls playsinline
+     webkit-playsinline preload="none"></video>
    </div>
 
    <div id="nowPlaying">
     Selecione um canal para assistir
    </div>
 
-   <button id="fullscreenButton">
-    TELA CHEIA
-   </button>
-
-   <h3>CANAIS</h3>
-
-   <div id="message">
-    Carregue uma categoria.
+   <div class="player-buttons">
+    <button id="mpegButton">TENTAR MPEGTS</button>
+    <button id="hlsButton">TENTAR HLS</button>
+    <button id="fullscreenButton">TELA CHEIA</button>
    </div>
 
+   <h3>CANAIS</h3>
+   <div id="message">Carregue uma categoria.</div>
    <div id="channels"></div>
-
   </section>
-
  </div>
 
- <div class="footer">
-  KIRITO PLAYER © 2026
- </div>
-
+ <div class="footer">KIRITO PLAYER © 2026</div>
 </main>
 
-<!-- Biblioteca de reprodução HLS -->
+<!-- Bibliotecas de reprodução -->
+<script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.8.0/dist/mpegts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 
 <script>
-
 const WORKER =
  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
 
@@ -334,205 +170,141 @@ let serverAddress = "";
 let currentCategory = null;
 let currentSection = "live";
 let currentChannel = null;
+let mpegPlayer = null;
 let hlsPlayer = null;
 
 const sectionInfo = {
- live:{
-  title:"TV AO VIVO",
-  action:"get_live_categories"
- },
- vod:{
-  title:"FILMES",
-  action:"get_vod_categories"
- },
- series:{
-  title:"SÉRIES",
-  action:"get_series_categories"
- }
+ live:{title:"TV AO VIVO",action:"get_live_categories"},
+ vod:{title:"FILMES",action:"get_vod_categories"},
+ series:{title:"SÉRIES",action:"get_series_categories"}
 };
 
-async function apiRequest(action,extra={}){
-
+async function apiRequest(action,extra={}) {
  const url = new URL(WORKER + "/player_api.php");
 
- url.searchParams.set(
-  "username",credentials.username
- );
+ url.searchParams.set("username",credentials.username);
+ url.searchParams.set("password",credentials.password);
 
- url.searchParams.set(
-  "password",credentials.password
- );
-
- if(action){
-  url.searchParams.set("action",action);
- }
+ if(action) url.searchParams.set("action",action);
 
  Object.entries(extra).forEach(([key,value])=>{
   url.searchParams.set(key,value);
  });
 
  const response = await fetch(url.toString(),{
-  method:"GET",
-  cache:"no-store"
+  method:"GET",cache:"no-store"
  });
 
- if(!response.ok){
-  throw new Error("Erro HTTP " + response.status);
- }
+ if(!response.ok) throw new Error("Erro HTTP "+response.status);
 
  return await response.json();
 }
 
 document.getElementById("loginForm").addEventListener(
- "submit",async function(event){
+ "submit",async function(event) {
+  event.preventDefault();
 
- event.preventDefault();
+  const server = document.getElementById("server").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const status = document.getElementById("status");
+  const button = document.getElementById("loginButton");
 
- const server =
-  document.getElementById("server").value.trim();
+  try {
+   const parsed = new URL(server);
 
- const username =
-  document.getElementById("username").value.trim();
+   if(parsed.hostname.toLowerCase() !== "aurasixseven.top") {
+    throw new Error("Servidor de teste não permitido.");
+   }
 
- const password =
-  document.getElementById("password").value;
+   serverAddress = parsed.origin;
+   credentials = {username,password};
 
- const status =
-  document.getElementById("status");
+   button.disabled = true;
+   status.textContent = "Verificando acesso...";
 
- const button =
-  document.getElementById("loginButton");
+   const data = await apiRequest("");
 
- try{
+   if(!data.user_info || Number(data.user_info.auth)!==1) {
+    throw new Error("Usuário ou senha não autorizados.");
+   }
 
-  const parsed = new URL(server);
+   document.getElementById("login").style.display = "none";
+   document.getElementById("app").style.display = "block";
 
-  if(parsed.hostname.toLowerCase() !== "aurasixseven.top"){
-   throw new Error("Servidor de teste não permitido.");
+   await loadCategories("live");
+
+  } catch(error) {
+   status.textContent = error.message || "Não foi possível conectar.";
+  } finally {
+   button.disabled = false;
   }
-
-  serverAddress = parsed.origin;
-  credentials = {username,password};
-
-  button.disabled = true;
-  status.textContent = "Verificando acesso...";
-
-  const data = await apiRequest("");
-
-  if(!data.user_info ||
-     Number(data.user_info.auth) !== 1){
-
-   throw new Error("Usuário ou senha não autorizados.");
-  }
-
-  document.getElementById("login").style.display = "none";
-  document.getElementById("app").style.display = "block";
-
-  await loadCategories("live");
-
- }catch(error){
-
-  status.textContent =
-   error.message || "Não foi possível conectar.";
-
- }finally{
-
-  button.disabled = false;
-
- }
 });
 
-async function loadCategories(section){
-
+async function loadCategories(section) {
  currentSection = section;
  currentCategory = null;
 
  const info = sectionInfo[section];
-
  const box = document.getElementById("categories");
- const channels = document.getElementById("channels");
- const message = document.getElementById("message");
 
- document.getElementById("sectionTitle").textContent =
-  info.title;
+ document.getElementById("sectionTitle").textContent = info.title;
 
  document.querySelectorAll("nav button").forEach(button=>{
-  button.classList.toggle(
-   "active",
-   button.dataset.section === section
-  );
+  button.classList.toggle("active",button.dataset.section===section);
  });
 
  box.innerHTML = "";
- channels.innerHTML = "";
+ document.getElementById("channels").innerHTML = "";
 
  stopPlayback();
 
+ const message = document.getElementById("message");
  message.textContent = "Carregando categorias...";
 
- try{
-
+ try {
   const categories = await apiRequest(info.action);
 
-  if(!Array.isArray(categories)){
+  if(!Array.isArray(categories)) {
    throw new Error("Resposta de categorias inválida.");
   }
 
-  if(categories.length === 0){
+  if(!categories.length) {
    message.textContent = "Nenhuma categoria encontrada.";
    return;
   }
 
   categories.forEach(category=>{
-
    const button = document.createElement("button");
-
    button.className = "category";
-
-   button.textContent =
-    category.category_name || "Categoria";
+   button.textContent = category.category_name || "Categoria";
 
    button.addEventListener("click",()=>{
-
     document.querySelectorAll(".category").forEach(item=>{
      item.classList.remove("active");
     });
 
     button.classList.add("active");
-
     currentCategory = category.category_id;
-
     loadChannels();
-
    });
 
    box.appendChild(button);
-
   });
 
-  message.textContent =
-   "Selecione uma categoria para carregar os conteúdos.";
+  message.textContent = "Selecione uma categoria.";
 
- }catch(error){
-
-  message.textContent =
-   "Erro ao carregar categorias: " + error.message;
-
+ } catch(error) {
+  message.textContent = "Erro nas categorias: "+error.message;
  }
 }
 
-async function loadChannels(){
+async function loadChannels() {
+ const box = document.getElementById("channels");
+ const message = document.getElementById("message");
 
- const channelsBox =
-  document.getElementById("channels");
-
- const message =
-  document.getElementById("message");
-
- channelsBox.innerHTML = "";
-
+ box.innerHTML = "";
  stopPlayback();
-
  message.textContent = "Carregando conteúdos...";
 
  const actions = {
@@ -541,98 +313,84 @@ async function loadChannels(){
   series:"get_series"
  };
 
- try{
+ try {
+  const data = await apiRequest(actions[currentSection],{
+   category_id:currentCategory
+  });
 
-  const data = await apiRequest(
-   actions[currentSection],
-   {category_id:currentCategory}
-  );
-
-  if(!Array.isArray(data)){
+  if(!Array.isArray(data)) {
    throw new Error("Lista de conteúdos inválida.");
   }
 
-  if(data.length === 0){
+  if(!data.length) {
    message.textContent = "Nenhum conteúdo encontrado.";
    return;
   }
 
-  message.textContent =
-   data.length + " conteúdos encontrados.";
+  message.textContent = data.length+" conteúdos encontrados.";
 
   data.forEach(item=>{
-
    const button = document.createElement("button");
-
    button.className = "channel";
 
-   if(item.stream_icon){
-
+   if(item.stream_icon) {
     const img = document.createElement("img");
-
     img.src = item.stream_icon;
     img.alt = "";
-    img.onerror = ()=>img.style.display = "none";
-
+    img.onerror = ()=>img.style.display="none";
     button.appendChild(img);
-
    }
 
    const name = document.createElement("span");
-
    name.textContent = item.name || "Conteúdo";
-
    button.appendChild(name);
 
    button.addEventListener("click",()=>{
-
     document.querySelectorAll(".channel").forEach(element=>{
      element.classList.remove("active");
     });
 
     button.classList.add("active");
 
-    if(currentSection === "live"){
-
-     playChannel(item);
-
-    }else{
-
+    if(currentSection==="live") {
+     playChannel(item,"mpegts");
+    } else {
      document.getElementById("nowPlaying").textContent =
-      "Selecionado: " + (item.name || "Conteúdo") +
-      ". Reprodução de filmes e séries será implementada na próxima etapa.";
-
+      "Selecionado: "+(item.name||"Conteúdo")+
+      ". Reprodução de filmes e séries será implementada depois.";
     }
-
    });
 
-   channelsBox.appendChild(button);
-
+   box.appendChild(button);
   });
 
- }catch(error){
-
-  message.textContent =
-   "Erro ao carregar conteúdos: " + error.message;
-
+ } catch(error) {
+  message.textContent = "Erro ao carregar conteúdos: "+error.message;
  }
 }
 
-function buildStreamUrl(streamId){
-
+function buildStreamUrl(streamId,format) {
  const user = encodeURIComponent(credentials.username);
  const pass = encodeURIComponent(credentials.password);
 
- return serverAddress +
-  "/live/" + user + "/" + pass +
-  "/" + encodeURIComponent(streamId) + ".m3u8";
+ return serverAddress+"/live/"+user+"/"+pass+"/"+
+  encodeURIComponent(streamId)+"."+format;
 }
 
-function stopPlayback(){
-
+function stopPlayback() {
  const video = document.getElementById("video");
 
- if(hlsPlayer){
+ if(mpegPlayer) {
+  try {
+   mpegPlayer.pause();
+   mpegPlayer.unload();
+   mpegPlayer.detachMediaElement();
+   mpegPlayer.destroy();
+  } catch(e) {}
+  mpegPlayer = null;
+ }
+
+ if(hlsPlayer) {
   hlsPlayer.destroy();
   hlsPlayer = null;
  }
@@ -640,114 +398,131 @@ function stopPlayback(){
  video.pause();
  video.removeAttribute("src");
  video.load();
-
  currentChannel = null;
-
 }
 
-function playChannel(channel){
-
- currentChannel = channel;
-
- const video = document.getElementById("video");
-
- document.getElementById("nowPlaying").textContent =
-  "Carregando: " + (channel.name || "Canal");
-
+function playChannel(channel,format="mpegts") {
  stopPlayback();
-
  currentChannel = channel;
 
- const url = buildStreamUrl(channel.stream_id);
+ if(format==="mpegts") {
+  playMpegts(channel);
+ } else {
+  playHls(channel);
+ }
+}
 
- if(window.Hls && Hls.isSupported()){
+function playMpegts(channel) {
+ const video = document.getElementById("video");
+ const status = document.getElementById("nowPlaying");
 
-  hlsPlayer = new Hls({
+ status.textContent = "Tentando reprodução MPEGTS: "+channel.name;
+
+ if(!window.mpegts || !mpegts.isSupported()) {
+  status.textContent =
+   "Este navegador não oferece suporte ao MPEGTS via MSE. Tente HLS.";
+  return;
+ }
+
+ const url = buildStreamUrl(channel.stream_id,"ts");
+
+ try {
+  mpegPlayer = mpegts.createPlayer({
+   type:"mpegts",
+   isLive:true,
+   url:url
+  },{
    enableWorker:true,
-   lowLatencyMode:false
+   enableStashBuffer:true,
+   stashInitialSize:384
   });
+
+  mpegPlayer.attachMediaElement(video);
+
+  mpegPlayer.on(mpegts.Events.ERROR,(type,detail,info)=>{
+   status.textContent =
+    "Erro MPEGTS: "+type+" / "+detail+
+    ". Verifique HTTPS, CORS e acesso ao stream.";
+  });
+
+  mpegPlayer.load();
+
+  video.play().then(()=>{
+   status.textContent = "Reproduzindo MPEGTS: "+channel.name;
+  }).catch(()=>{
+   status.textContent =
+    "MPEGTS carregado. Toque em PLAY para iniciar.";
+  });
+
+ } catch(error) {
+  status.textContent = "Falha ao iniciar MPEGTS: "+error.message;
+ }
+}
+
+function playHls(channel) {
+ const video = document.getElementById("video");
+ const status = document.getElementById("nowPlaying");
+
+ status.textContent = "Tentando reprodução HLS: "+channel.name;
+
+ const url = buildStreamUrl(channel.stream_id,"m3u8");
+
+ if(window.Hls && Hls.isSupported()) {
+  hlsPlayer = new Hls();
 
   hlsPlayer.loadSource(url);
   hlsPlayer.attachMedia(video);
 
-  hlsPlayer.on(
-   Hls.Events.MANIFEST_PARSED,
-   function(){
-
-    document.getElementById("nowPlaying").textContent =
-     "Canal pronto: " + channel.name;
-
-    video.play().catch(()=>{
-     document.getElementById("nowPlaying").textContent =
-      "Toque no botão PLAY para iniciar o canal.";
-    });
-
-   }
-  );
-
-  hlsPlayer.on(
-   Hls.Events.ERROR,
-   function(event,data){
-
-    if(data.fatal){
-
-     document.getElementById("nowPlaying").textContent =
-      "Erro de reprodução: " + data.details;
-
-     hlsPlayer.destroy();
-     hlsPlayer = null;
-
-    }
-
-   }
-  );
-
- }else if(
-  video.canPlayType("application/vnd.apple.mpegurl")
- ){
-
-  video.src = url;
-
-  video.play().catch(()=>{
-
-   document.getElementById("nowPlaying").textContent =
-    "Toque no botão PLAY para iniciar.";
-
+  hlsPlayer.on(Hls.Events.MANIFEST_PARSED,()=>{
+   video.play().then(()=>{
+    status.textContent = "Reproduzindo HLS: "+channel.name;
+   }).catch(()=>{
+    status.textContent = "HLS carregado. Toque em PLAY.";
+   });
   });
 
- }else{
+  hlsPlayer.on(Hls.Events.ERROR,(event,data)=>{
+   if(data.fatal) {
+    status.textContent =
+     "Erro HLS: "+data.details+
+     ". Verifique HTTPS, CORS e acesso ao stream.";
+   }
+  });
 
-  document.getElementById("nowPlaying").textContent =
-   "Este navegador não suporta reprodução HLS.";
-
+ } else if(video.canPlayType("application/vnd.apple.mpegurl")) {
+  video.src = url;
+  video.play().catch(()=>{
+   status.textContent = "HLS carregado. Toque em PLAY.";
+  });
+ } else {
+  status.textContent = "Este navegador não suporta HLS.";
  }
-
 }
 
-document.getElementById("fullscreenButton").addEventListener(
- "click",function(){
+document.getElementById("mpegButton").addEventListener("click",()=>{
+ if(currentChannel) playChannel(currentChannel,"mpegts");
+});
 
+document.getElementById("hlsButton").addEventListener("click",()=>{
+ if(currentChannel) playChannel(currentChannel,"hls");
+});
+
+document.getElementById("fullscreenButton").addEventListener("click",()=>{
  const video = document.getElementById("video");
 
- if(video.requestFullscreen){
+ if(video.requestFullscreen) {
   video.requestFullscreen();
- }else if(video.webkitEnterFullscreen){
+ } else if(video.webkitEnterFullscreen) {
   video.webkitEnterFullscreen();
  }
-
 });
 
 document.querySelectorAll("nav button").forEach(button=>{
-
  button.addEventListener("click",()=>{
-
   loadCategories(button.dataset.section);
-
  });
-
 });
 
 </script>
-
 </body>
 </html>
