@@ -8,8 +8,8 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;min-height:100vh;background:#050914;color:white;
- font-family:Arial,sans-serif;padding:22px;
+ margin:0;background:#050914;color:white;
+ font-family:Arial,sans-serif;padding:16px;
 }
 .login{
  max-width:430px;margin:8vh auto;padding:30px;
@@ -25,30 +25,76 @@ body{
 input{
  width:100%;padding:15px;margin:8px 0;
  background:#061020;border:1px solid #174d83;
- border-radius:8px;color:white;font-size:17px;
+ border-radius:8px;color:white;font-size:16px;
 }
 button{
- padding:14px;border:1px solid #126cc0;border-radius:8px;
- background:#09264a;color:white;font-size:16px;cursor:pointer;
+ padding:13px;border:1px solid #126cc0;
+ border-radius:8px;background:#09264a;
+ color:white;font-size:15px;cursor:pointer;
 }
 button:focus,input:focus{outline:3px solid #35aaff}
 .login button{width:100%;margin-top:14px;background:#087cff}
 #status{margin-top:18px;color:#80caff;overflow-wrap:anywhere}
-#app{display:none;max-width:1100px;margin:auto}
-header{padding:20px 0;border-bottom:1px solid #174d83}
+#app{display:none;max-width:1200px;margin:auto}
+header{
+ padding:15px 0;border-bottom:1px solid #174d83;
+}
 header .logo{font-size:27px}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+nav{
+ display:flex;gap:10px;flex-wrap:wrap;margin:18px 0;
+}
 nav button{flex:1;min-width:100px}
 nav button.active{background:#087cff}
-h2{color:#35aaff}
-#categories{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
- gap:12px
+h2{color:#35aaff;font-size:20px}
+.layout{
+ display:grid;grid-template-columns:260px 1fr;
+ gap:16px;
 }
-.category{min-height:65px;text-align:left;background:#09172b}
-#message{color:#9acfff;margin:20px 0}
+.panel{
+ background:#09172b;border:1px solid #174d83;
+ border-radius:12px;padding:14px;
+}
+#categories{
+ display:flex;flex-direction:column;gap:8px;
+ max-height:500px;overflow:auto;
+}
+.category{
+ width:100%;text-align:left;background:#061020;
+}
+.category.active{background:#087cff}
+#channels{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
+ gap:10px;margin-top:15px;
+}
+.channel{
+ background:#061020;min-height:125px;
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:8px;
+ text-align:center;overflow-wrap:anywhere;
+}
+.channel.active{border-color:#35aaff;background:#10345a}
+.channel img{
+ width:55px;height:55px;object-fit:contain;
+}
+.player{
+ background:#000;border:1px solid #087cff;
+ border-radius:12px;overflow:hidden;
+}
+video{
+ width:100%;display:block;background:#000;
+ aspect-ratio:16/9;
+}
+#nowPlaying{color:#80caff;margin:12px 0}
+#message{color:#9acfff;margin:12px 0}
 .footer{text-align:center;color:#52799e;margin-top:30px;font-size:12px}
+@media(max-width:700px){
+ .layout{grid-template-columns:1fr}
+ #categories{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  max-height:220px;
+ }
+}
 </style>
 </head>
 
@@ -62,13 +108,10 @@ h2{color:#35aaff}
   <input id="server" type="text"
    value="http://aurasixseven.top"
    placeholder="DNS / Servidor" required>
-
   <input id="username" type="text"
    placeholder="Usuário" required>
-
   <input id="password" type="password"
    placeholder="Senha" required>
-
   <button id="loginButton" type="submit">ENTRAR</button>
  </form>
 
@@ -79,7 +122,7 @@ h2{color:#35aaff}
 
  <header>
   <div class="logo">⚔ KIRITO PLAYER</div>
-  <div>Bem-vindo ao seu entretenimento</div>
+  <div>Seu entretenimento em um só lugar</div>
  </header>
 
  <nav>
@@ -88,9 +131,32 @@ h2{color:#35aaff}
   <button data-section="series">SÉRIES</button>
  </nav>
 
- <h2 id="sectionTitle">Categorias de TV</h2>
- <div id="message">Carregando categorias...</div>
- <div id="categories"></div>
+ <h2 id="sectionTitle">TV AO VIVO</h2>
+
+ <div class="layout">
+
+  <section class="panel">
+   <h3>CATEGORIAS</h3>
+   <div id="categories"></div>
+  </section>
+
+  <section class="panel">
+   <h3>REPRODUTOR</h3>
+
+   <div class="player">
+    <video id="video" controls playsinline></video>
+   </div>
+
+   <div id="nowPlaying">Selecione um canal para assistir</div>
+
+   <button id="fullscreenButton">TELA CHEIA</button>
+
+   <h3>CANAIS</h3>
+   <div id="message">Carregue uma categoria.</div>
+   <div id="channels"></div>
+  </section>
+
+ </div>
 
  <div class="footer">KIRITO PLAYER © 2026</div>
 </main>
@@ -100,38 +166,45 @@ const WORKER =
  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
 
 let credentials = null;
+let serverAddress = "";
+let currentCategory = null;
+let currentSection = "live";
+let currentChannel = null;
+let currentFormat = "m3u8";
 
 const sectionInfo = {
- live: {
-  title:"Categorias de TV",
+ live:{
+  title:"TV AO VIVO",
   action:"get_live_categories"
  },
- vod: {
-  title:"Categorias de filmes",
+ vod:{
+  title:"FILMES",
   action:"get_vod_categories"
  },
- series: {
-  title:"Categorias de séries",
+ series:{
+  title:"SÉRIES",
   action:"get_series_categories"
  }
 };
 
-async function apiRequest(action) {
+async function apiRequest(action, extra = {}) {
  const url = new URL(WORKER + "/player_api.php");
 
  url.searchParams.set("username",credentials.username);
  url.searchParams.set("password",credentials.password);
 
- if(action) {
-  url.searchParams.set("action",action);
- }
+ if(action) url.searchParams.set("action",action);
+
+ Object.entries(extra).forEach(([key,value])=>{
+  url.searchParams.set(key,value);
+ });
 
  const response = await fetch(url.toString(),{
   method:"GET",
   cache:"no-store"
  });
 
- if(!response.ok) {
+ if(!response.ok){
   throw new Error("Erro HTTP " + response.status);
  }
 
@@ -139,7 +212,7 @@ async function apiRequest(action) {
 }
 
 document.getElementById("loginForm").addEventListener(
- "submit", async function(event) {
+ "submit",async function(event){
 
  event.preventDefault();
 
@@ -152,19 +225,17 @@ document.getElementById("loginForm").addEventListener(
  const password =
   document.getElementById("password").value;
 
- const status =
-  document.getElementById("status");
+ const status = document.getElementById("status");
+ const button = document.getElementById("loginButton");
 
- const button =
-  document.getElementById("loginButton");
-
- try {
+ try{
   const parsed = new URL(server);
 
-  if(parsed.hostname.toLowerCase() !== "aurasixseven.top") {
+  if(parsed.hostname.toLowerCase() !== "aurasixseven.top"){
    throw new Error("Servidor de teste não permitido.");
   }
 
+  serverAddress = parsed.origin;
   credentials = {username,password};
 
   button.disabled = true;
@@ -173,7 +244,7 @@ document.getElementById("loginForm").addEventListener(
   const data = await apiRequest("");
 
   if(!data.user_info ||
-     Number(data.user_info.auth) !== 1) {
+     Number(data.user_info.auth) !== 1){
    throw new Error("Usuário ou senha não autorizados.");
   }
 
@@ -182,84 +253,224 @@ document.getElementById("loginForm").addEventListener(
 
   await loadCategories("live");
 
- } catch(error) {
+ }catch(error){
   status.textContent = error.message ||
    "Não foi possível conectar.";
- } finally {
+ }finally{
   button.disabled = false;
  }
 });
 
-async function loadCategories(section) {
+async function loadCategories(section){
+
+ currentSection = section;
+ currentCategory = null;
 
  const info = sectionInfo[section];
-
  const box = document.getElementById("categories");
+ const channels = document.getElementById("channels");
  const message = document.getElementById("message");
 
  document.getElementById("sectionTitle").textContent =
   info.title;
 
- document.querySelectorAll("nav button").forEach(button => {
+ document.querySelectorAll("nav button").forEach(button=>{
   button.classList.toggle(
-   "active",
-   button.dataset.section === section
+   "active",button.dataset.section === section
   );
  });
 
  box.innerHTML = "";
+ channels.innerHTML = "";
  message.textContent = "Carregando categorias...";
 
- try {
+ try{
   const categories = await apiRequest(info.action);
 
-  if(!Array.isArray(categories)) {
+  if(!Array.isArray(categories)){
    throw new Error("Resposta de categorias inválida.");
   }
 
-  if(categories.length === 0) {
+  if(categories.length === 0){
    message.textContent = "Nenhuma categoria encontrada.";
    return;
   }
 
-  message.textContent =
-   categories.length + " categorias encontradas.";
-
-  categories.forEach(category => {
+  categories.forEach(category=>{
 
    const button = document.createElement("button");
-
    button.className = "category";
+   button.textContent = category.category_name || "Categoria";
 
-   button.textContent =
-    category.category_name || "Categoria";
+   button.addEventListener("click",()=>{
+    document.querySelectorAll(".category").forEach(item=>{
+     item.classList.remove("active");
+    });
 
-   button.addEventListener("click", () => {
-
-    message.textContent =
-     "Categoria selecionada: " +
-     button.textContent +
-     ". A listagem dos conteúdos será implementada na próxima etapa.";
-
+    button.classList.add("active");
+    currentCategory = category.category_id;
+    loadChannels();
    });
 
    box.appendChild(button);
   });
 
- } catch(error) {
+  message.textContent =
+   "Selecione uma categoria para carregar os conteúdos.";
 
+ }catch(error){
   message.textContent =
    "Erro ao carregar categorias: " + error.message;
-
  }
 }
 
-document.querySelectorAll("nav button").forEach(button => {
- button.addEventListener("click", () => {
+async function loadChannels(){
+
+ const channelsBox = document.getElementById("channels");
+ const message = document.getElementById("message");
+
+ channelsBox.innerHTML = "";
+ message.textContent = "Carregando canais...";
+
+ const actions = {
+  live:"get_live_streams",
+  vod:"get_vod_streams",
+  series:"get_series"
+ };
+
+ try{
+  const data = await apiRequest(
+   actions[currentSection],
+   {category_id:currentCategory}
+  );
+
+  if(!Array.isArray(data)){
+   throw new Error("Lista de conteúdos inválida.");
+  }
+
+  if(data.length === 0){
+   message.textContent = "Nenhum conteúdo encontrado.";
+   return;
+  }
+
+  message.textContent = data.length + " conteúdos encontrados.";
+
+  data.forEach(item=>{
+
+   const button = document.createElement("button");
+   button.className = "channel";
+
+   if(item.stream_icon){
+    const img = document.createElement("img");
+    img.src = item.stream_icon;
+    img.alt = "";
+    img.onerror = ()=>img.style.display="none";
+    button.appendChild(img);
+   }
+
+   const name = document.createElement("span");
+   name.textContent = item.name || "Conteúdo";
+   button.appendChild(name);
+
+   button.addEventListener("click",()=>{
+    document.querySelectorAll(".channel").forEach(element=>{
+     element.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    if(currentSection === "live"){
+     playChannel(item);
+    }else{
+     document.getElementById("nowPlaying").textContent =
+      "Selecionado: " + (item.name || "Conteúdo") +
+      ". Reprodução de filmes e séries será implementada na próxima etapa.";
+    }
+   });
+
+   channelsBox.appendChild(button);
+  });
+
+ }catch(error){
+  message.textContent =
+   "Erro ao carregar conteúdos: " + error.message;
+ }
+}
+
+function playChannel(channel){
+
+ currentChannel = channel;
+ currentFormat = "m3u8";
+
+ const video = document.getElementById("video");
+
+ document.getElementById("nowPlaying").textContent =
+  "Reproduzindo: " + (channel.name || "Canal");
+
+ video.pause();
+ video.src = buildStreamUrl(channel.stream_id,currentFormat);
+ video.load();
+
+ video.play().catch(()=>{
+  document.getElementById("nowPlaying").textContent =
+   "Canal selecionado. Pressione PLAY para iniciar ou aguarde a reprodução.";
+ });
+}
+
+function buildStreamUrl(streamId,format){
+
+ const user = encodeURIComponent(credentials.username);
+ const pass = encodeURIComponent(credentials.password);
+
+ return serverAddress +
+  "/live/" + user + "/" + pass +
+  "/" + encodeURIComponent(streamId) + "." + format;
+}
+
+document.getElementById("video").addEventListener(
+ "error",function(){
+
+  if(!currentChannel) return;
+
+  if(currentFormat === "m3u8"){
+   currentFormat = "ts";
+
+   this.src = buildStreamUrl(
+    currentChannel.stream_id,currentFormat
+   );
+
+   this.load();
+
+   document.getElementById("nowPlaying").textContent =
+    "Tentando formato alternativo...";
+  }else{
+   document.getElementById("nowPlaying").textContent =
+    "Não foi possível reproduzir. O formato pode não ser compatível com este dispositivo.";
+  }
+});
+
+document.getElementById("fullscreenButton").addEventListener(
+ "click",function(){
+
+ const video = document.getElementById("video");
+
+ if(video.requestFullscreen){
+  video.requestFullscreen();
+ }else if(video.webkitEnterFullscreen){
+  video.webkitEnterFullscreen();
+ }
+});
+
+document.querySelectorAll("nav button").forEach(button=>{
+ button.addEventListener("click",()=>{
+  document.getElementById("video").pause();
+  document.getElementById("video").removeAttribute("src");
+  document.getElementById("nowPlaying").textContent =
+   "Selecione um conteúdo.";
+
   loadCategories(button.dataset.section);
  });
 });
 </script>
-
 </body>
 </html>
