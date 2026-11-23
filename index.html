@@ -368,7 +368,6 @@ async function loadChannels() {
  }
 }
 
-/* ENDEREÇO DA TRANSMISSÃO PELO WORKER */
 function buildStreamUrl(streamId,format) {
  const user = encodeURIComponent(credentials.username);
  const pass = encodeURIComponent(credentials.password);
@@ -440,10 +439,18 @@ function playMpegts(channel) {
 
   mpegPlayer.attachMediaElement(video);
 
+  // DIAGNÓSTICO DETALHADO DO ERRO
   mpegPlayer.on(mpegts.Events.ERROR,(type,detail,info)=>{
+   const httpCode = info?.code || "não informado";
+   const mensagem = info?.msg || "";
+   const detalhes = info ? JSON.stringify(info) : "";
+
    status.textContent =
-    "Erro MPEGTS: "+type+" / "+detail+
-    ". Verifique o acesso à transmissão.";
+    "Erro MPEGTS: "+type+
+    " / "+detail+
+    " / HTTP: "+httpCode+
+    " / "+mensagem+
+    " / Detalhes: "+detalhes;
   });
 
   mpegPlayer.load();
