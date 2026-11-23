@@ -2,168 +2,210 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KIRITO PLAYER</title>
-
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, #102b50, #050914 75%);
-  color: white;
-  font-family: Arial, sans-serif;
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;background:#050914;color:white;
+ font-family:Arial,sans-serif;padding:22px;
 }
-
-.login {
-  width: 100%;
-  max-width: 430px;
-  padding: 35px;
-  text-align: center;
-  background: #071225;
-  border: 1px solid #087cff;
-  border-radius: 18px;
-  box-shadow: 0 0 30px #0066ff55;
+.login{
+ max-width:430px;margin:8vh auto;padding:30px;
+ background:#09172b;border:1px solid #087cff;
+ border-radius:16px;text-align:center;
+ box-shadow:0 0 25px #0066ff44;
 }
-
-.logo {
-  font-size: 32px;
-  font-weight: bold;
-  color: #35aaff;
-  text-shadow: 0 0 15px #087cff;
+.logo{font-size:30px;font-weight:bold;color:#35aaff;
+ text-shadow:0 0 15px #087cff}
+.subtitle{color:#a9c9e9;letter-spacing:3px;margin:12px 0 25px}
+input{
+ width:100%;padding:15px;margin:8px 0;
+ background:#061020;border:1px solid #174d83;
+ border-radius:8px;color:white;font-size:17px;
 }
-
-.subtitle {
-  margin: 10px 0 25px;
-  color: #a9c9e9;
-  letter-spacing: 3px;
+button{
+ padding:14px;border:1px solid #126cc0;border-radius:8px;
+ background:#09264a;color:white;font-size:16px;
+ cursor:pointer;
 }
-
-input {
-  width: 100%;
-  padding: 16px;
-  margin: 9px 0;
-  border: 1px solid #174d83;
-  border-radius: 8px;
-  background: #09172b;
-  color: white;
-  font-size: 17px;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  margin-top: 18px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #0066ff, #00b7ff);
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:focus, input:focus {
-  outline: 3px solid #35aaff;
-}
-
-#status {
-  margin-top: 18px;
-  color: #80caff;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-
-.footer {
-  margin-top: 25px;
-  color: #52799e;
-  font-size: 12px;
-}
+button:focus,input:focus{outline:3px solid #35aaff}
+.login button{width:100%;margin-top:14px;background:#087cff}
+#status{margin-top:18px;color:#80caff;overflow-wrap:anywhere}
+#app{display:none;max-width:1100px;margin:auto}
+header{padding:20px 0;border-bottom:1px solid #174d83}
+header .logo{font-size:27px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+nav button{flex:1;min-width:100px}
+nav button.active{background:#087cff}
+h2{color:#35aaff}
+#categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.category{min-height:65px;text-align:left;background:#09172b}
+#message{color:#9acfff;margin:20px 0}
+.footer{text-align:center;color:#52799e;margin-top:30px;font-size:12px}
 </style>
 </head>
-
 <body>
-<div class="login">
-  <div class="logo">⚔ KIRITO PLAYER</div>
-  <div class="subtitle">ENTERTAINMENT SYSTEM</div>
 
-  <form id="loginForm">
-    <input id="server" type="text"
-      value="http://aurasixseven.top"
-      placeholder="DNS / Servidor" required>
+<section class="login" id="login">
+ <div class="logo">⚔ KIRITO PLAYER</div>
+ <div class="subtitle">ENTERTAINMENT SYSTEM</div>
+ <form id="loginForm">
+  <input id="server" value="http://aurasixseven.top"
+   placeholder="DNS / Servidor" required>
+  <input id="username" placeholder="Usuário" required>
+  <input id="password" type="password" placeholder="Senha" required>
+  <button id="loginButton">ENTRAR</button>
+ </form>
+ <div id="status">Informe seus dados para conectar</div>
+</section>
 
-    <input id="username" type="text"
-      placeholder="Usuário" required>
+<main id="app">
+ <header><div class="logo">⚔ KIRITO PLAYER</div>
+ <div>Bem-vindo ao seu entretenimento</div></header>
 
-    <input id="password" type="password"
-      placeholder="Senha" required>
+ <nav>
+  <button class="active" data-section="live">TV AO VIVO</button>
+  <button data-section="vod">FILMES</button>
+  <button data-section="series">SÉRIES</button>
+ </nav>
 
-    <button id="loginButton" type="submit">ENTRAR</button>
-  </form>
-
-  <div id="status">Informe seus dados para conectar</div>
-  <div class="footer">KIRITO PLAYER © 2026</div>
-</div>
+ <h2 id="sectionTitle">Categorias de TV</h2>
+ <div id="message">Carregando categorias...</div>
+ <div id="categories"></div>
+ <div class="footer">KIRITO PLAYER © 2026</div>
+</main>
 
 <script>
 const WORKER =
-  "https://kirito-player-msx-api.leomaxbolado.workers.dev";
+ "https://kirito-player-msx-api.leomaxbolado.workers.dev";
 
-const form = document.getElementById("loginForm");
-const statusBox = document.getElementById("status");
-const loginButton = document.getElementById("loginButton");
+let credentials = null;
+let currentSection = "live";
 
-form.addEventListener("submit", async function(event) {
+const sectionInfo = {
+ live: {
+  title:"Categorias de TV",
+  action:"get_live_categories"
+ },
+ vod: {
+  title:"Categorias de filmes",
+  action:"get_vod_categories"
+ },
+ series: {
+  title:"Categorias de séries",
+  action:"get_series_categories"
+ }
+};
+
+async function apiRequest(action) {
+ const url = new URL(WORKER + "/player_api.php");
+ url.searchParams.set("username",credentials.username);
+ url.searchParams.set("password",credentials.password);
+ if(action) url.searchParams.set("action",action);
+
+ const response = await fetch(url.toString(),{
+  method:"GET",cache:"no-store"
+ });
+
+ if(!response.ok){
+  throw new Error("Erro HTTP " + response.status);
+ }
+
+ return await response.json();
+}
+
+document.getElementById("loginForm").addEventListener("submit",
+ async function(event){
   event.preventDefault();
 
   const server = document.getElementById("server").value.trim();
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value;
+  const status = document.getElementById("status");
+  const button = document.getElementById("loginButton");
 
-  try {
-    const parsed = new URL(server);
+  try{
+   const parsed = new URL(server);
 
-    if (parsed.hostname.toLowerCase() !== "aurasixseven.top") {
-      throw new Error("Neste teste, use o servidor aurasixseven.top.");
-    }
+   if(parsed.hostname.toLowerCase() !== "aurasixseven.top"){
+    throw new Error("Servidor de teste não permitido.");
+   }
 
-    loginButton.disabled = true;
-    statusBox.textContent = "Conectando ao servidor...";
+   credentials = {username,password};
+   button.disabled = true;
+   status.textContent = "Verificando acesso...";
 
-    const endpoint = new URL(WORKER + "/player_api.php");
-    endpoint.searchParams.set("username", username);
-    endpoint.searchParams.set("password", password);
+   const data = await apiRequest("");
 
-    const response = await fetch(endpoint.toString(), {
-      method: "GET",
-      cache: "no-store"
-    });
+   if(!data.user_info ||
+      Number(data.user_info.auth) !== 1){
+    throw new Error("Usuário ou senha não autorizados.");
+   }
 
-    if (!response.ok) {
-      throw new Error("Servidor respondeu HTTP " + response.status);
-    }
+   document.getElementById("login").style.display="none";
+   document.getElementById("app").style.display="block";
 
-    const data = await response.json();
+   await loadCategories("live");
 
-    if (!data.user_info ||
-        Number(data.user_info.auth) !== 1) {
-      throw new Error("Usuário ou senha não autorizados.");
-    }
-
-    statusBox.textContent =
-      "Login validado! Próxima etapa: carregar categorias.";
-
-  } catch (error) {
-    statusBox.textContent = error.message ||
-      "Não foi possível conectar ao servidor.";
-  } finally {
-    loginButton.disabled = false;
+  }catch(error){
+   status.textContent = error.message ||
+    "Não foi possível conectar.";
+  }finally{
+   button.disabled = false;
   }
+});
+
+async function loadCategories(section){
+ currentSection = section;
+ const info = sectionInfo[section];
+ const box = document.getElementById("categories");
+ const message = document.getElementById("message");
+
+ document.getElementById("sectionTitle").textContent=info.title;
+ document.querySelectorAll("nav button").forEach(button=>{
+  button.classList.toggle("active",
+   button.dataset.section===section);
+ });
+
+ box.innerHTML="";
+ message.textContent="Carregando categorias...";
+
+ try{
+  const categories = await apiRequest(info.action);
+
+  if(!Array.isArray(categories)){
+   throw new Error("Resposta de categorias inválida.");
+  }
+
+  if(categories.length===0){
+   message.textContent="Nenhuma categoria encontrada.";
+   return;
+  }
+
+  message.textContent=categories.length+" categorias encontradas.";
+
+  categories.forEach(category=>{
+   const button=document.createElement("button");
+   button.className="category";
+   button.textContent=category.category_name || "Categoria";
+   button.addEventListener("click",()=>{
+    message.textContent=
+     "Categoria selecionada: "+button.textContent+
+     ". A listagem dos conteúdos será implementada na próxima etapa.";
+   });
+   box.appendChild(button);
+  });
+
+ }catch(error){
+  message.textContent="Erro ao carregar categorias: "+error.message;
+ }
+}
+
+document.querySelectorAll("nav button").forEach(button=>{
+ button.addEventListener("click",()=>{
+  loadCategories(button.dataset.section);
+ });
 });
 </script>
 </body>
